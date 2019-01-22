@@ -40,6 +40,27 @@ load("//third_party/toolchains/preconfig/generate:workspace.bzl",
 
 remote_config_workspace()
 
+# Uncomment and update the paths in these entries to build the Android demo.
+android_sdk_repository(
+    name = "androidsdk",
+    api_level = 28,
+    # Ensure that you have the build_tools_version below installed in the
+    # SDK manager as it updates periodically.
+    build_tools_version = "28.0.2",
+    # Replace with path to Android SDK on your system
+    path = "../android-sdk-linux",
+)
+
+android_ndk_repository(
+    name="androidndk",
+    path="../android-ndk-r14b",
+    # This needs to be 14 or higher to compile TensorFlow.
+    # Please specify API level to >= 21 to build for 64-bit
+    # archtectures or the Android NDK will automatically select biggest
+    # API level that it supports without notice.
+    # Note that the NDK version is not the API level.
+    api_level=25)
+
 # Apple and Swift rules.
 http_archive(
     name = "build_bazel_rules_apple",
