@@ -34,7 +34,7 @@
 当SDK和NDK配置好后可以使用下面的命令进行bazel编译:
 
 ```bash
-bazel build -c opt //tensorflow/examples/tf_driver:t2mobile_driver
+bazel build --cxxopt='--std=c++11' -c opt //tensorflow/examples/tf_driver:t2mobile_driver
 ```
 
 ##### Install
@@ -45,4 +45,23 @@ adb install -r bazel-bin/tensorflow/examples/tf_driver/t2mobile_driver.apk
 ```
 
 ## TODO
-1.算法加速
+### 算法加速
+在APK中使用mobilenetv2识别一张图大概耗时563ms
+
+1.使用transform_graph进行加速，可以加速到大概439ms，加速了22%
+```
+bazel-bin/tensorflow/tools/graph_transforms/transform_graph \
+--in_graph=freeze_mobilenetv2.pb \
+--out_graph=optimized_mobilenetv2.pb \
+--inputs='MobilenetV2/input' \
+--outputs='MobilenetV2/Predictions/Softmax' \
+--transforms='strip_unused_nodes(type=float, shape="1,224,224,3")
+        strip_unused_nodes(type=float, shape="1,224,224,3")
+        remove_nodes(op=Identity, op=CheckNumerics)
+        fold_constants(ignore_errors=true)
+        flatten_atrous_conv
+        fold_batch_norms
+        fold_old_batch_norms
+        strip_unused_nodes
+        sort_by_execution_order'
+```

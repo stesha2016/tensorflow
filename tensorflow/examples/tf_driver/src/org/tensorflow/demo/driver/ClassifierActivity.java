@@ -76,7 +76,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   private static final String OUTPUT_NAME = "MobilenetV2/Predictions/Softmax";
 
 
-  private static final String MODEL_FILE = "file:///android_asset/freeze_mobilenetv2.pb";
+  private static final String MODEL_FILE = "file:///android_asset/optimized_mobilenetv2.pb";
   private static final String LABEL_FILE =
       "file:///android_asset/labels.txt";
 
